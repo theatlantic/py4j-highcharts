@@ -1,0 +1,5 @@
+build-local.properties
+build/
+classes/
+py4j-svg2png-1.0/
+.DS_Store
