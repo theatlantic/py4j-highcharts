@@ -28,8 +28,8 @@ This will set up a gateway server listening on port 25333 which py4j-python
 can interact with.
 
 Due to [a bug in Py4J](https://github.com/bartdag/py4j/issues/91), it is
-necessary to install from a `patched version of py4j-python
-<https://github.com/downloads/theatlantic/py4j/py4j-0.7.zip>`_. This can be
+necessary to install from a [patched version of
+py4j-python](https://github.com/downloads/theatlantic/py4j/py4j-0.7.zip). This can be
 done by unzipping and running through setup.py, or with pip:
 
     $ pip install https://github.com/downloads/theatlantic/py4j/py4j-0.7.zip
