@@ -44,7 +44,7 @@ fi
 
 # ----- Set Up The Runtime Classpath ------------------------------------------
 
-CP=$JAVA_HOME/lib/tools.jar:lib/build/ant-1.6.5.jar:lib/build/ant-launcher-1.6.5.jar:lib/build/crimson-1.1.3.jar
+CP=$JAVA_HOME/lib/tools.jar:lib/build/ant-1.8.2.jar:lib/build/ant-launcher-1.8.2.jar:lib/build/crimson-1.1.3.jar
 
 if $cygwin; then
   JAVA_HOME=`cygpath --path --windows "$JAVA_HOME"`
