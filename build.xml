@@ -63,7 +63,14 @@ To display the available targets type:
   <!-- Configuring the build -->
   <property file="${basedir}/build-local.properties"/>
   <property environment="env"/>
-
+  
+  <!-- Add ant-contrib -->
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="lib/build/ant-contrib-1.0b3.jar" />
+    </classpath>
+  </taskdef>
+  
   <!-- Initializations .................................................... -->
   <target name="init" unless="init.done">
     <tstamp>
@@ -78,12 +85,13 @@ To display the available targets type:
     <property name="completeVersion"    value="${version}${revisionType}${revisionNumber}"/>
   
     <property file="build.properties"/>
-    <property name="debug"              value="off"/>
+    <property name="debug"              value="on"/>
     <property name="optimize"           value="on"/>
     <property name="deprecation"        value="on"/>
   
     <property name="src"                value="src"/>
     <property name="dest"               value="classes"/>
+    <property name="resources"          value="resources"/>
     <property name="build"              value="build"/>
     <property name="build.id"           value="${ts} (${user.name} [${os.name} ${os.version} ${os.arch}, Java ${java.runtime.version}])"/>
     <property name="docs"               value="${build}/javadocs"/>
@@ -97,17 +105,21 @@ To display the available targets type:
     <property name="jdk.javadoc"        value="http://docs.oracle.com/javase/1.4.2/docs/api/"/>
     <property name="batik.javadoc"      value="http://xmlgraphics.apache.org/batik/javadoc/" />
     <property name="py4j.javadoc"       value="http://py4j.sourceforge.net/_static/javadoc/" />
+    <property name="dl.rhino172"        value="http://ftp.mozilla.org/pub/mozilla.org/js/rhino1_7R2.zip" />
+    <property name="dl.rhino172.md5"    value="40d0a9abec8169e42920214b37fa8e0e"/>
     <property name="dl.rhino"           value="http://ftp.mozilla.org/pub/mozilla.org/js/rhino1_7R3.zip" />
-    <property name="dl.rhino.file"      value="rhino1_7R3.zip" />
     <property name="dl.rhino.md5"       value="99d94103662a8d0b571e247a77432ac5"/>
-    <property name="dl.fop"             value="http://mirror.candidhosting.com/pub/apache//xmlgraphics/fop/binaries/fop-1.0-bin.zip" />
-    <property name="dl.fop.file"        value="fop-1.0-bin.zip" />
+    <property name="dl.fop"             value="http://mirror.candidhosting.com/pub/apache/xmlgraphics/fop/binaries/fop-1.0-bin.zip" />
     <property name="dl.fop.md5"         value="262da85d77fbca68556bc74e44ecca27" />
     <property name="dl.py4j"            value="http://cloud.github.com/downloads/theatlantic/py4j/py4j-0.7.zip" />
-    <property name="dl.py4j.file"       value="py4j-0.7.zip" />
     <property name="dl.py4j.md5"        value="40f790747fca3a26c8c6c608329307bf" />
+    <property name="dl.gson"            value="http://google-gson.googlecode.com/files/google-gson-2.0-release.zip" />
+    <property name="dl.gson.md5"        value="242f015209de6775e07fe3a3605c93da" />
+    <property name="dl.slf4j"           value="http://www.slf4j.org/dist/slf4j-1.6.4.zip" />
+    <property name="dl.slf4j.md5"       value="550a554a90b1ae0739a5a6bace15ae56" />
+    <property name="dl.log4j"           value="http://apache.mirrors.hoobly.com/logging/log4j/1.2.16/apache-log4j-1.2.16.zip" />
+    <property name="dl.log4j.md5"       value="6c55fbdfa752c635159e219e02639056" />
     
-  
     <pathconvert property="cwd">
       <path path="."/>
     </pathconvert>
@@ -202,24 +214,38 @@ To display the available targets type:
     <attribute name="url"/>
     <attribute name="dest"/>
     <attribute name="md5"/>
+    <attribute name="dlprop"/>
     <sequential>
+      <local name="downloaded" />
       <local name="destdir"/>
+      <local name="destfile"/>
+      <available file="@{dest}" property="downloaded" />
+      <property name="@{dlprop}" value="${downloaded}" />
       <dirname property="destdir" file="@{dest}"/>
       <basename property="destfile" file="@{dest}"/>
-      <echo message="Downloading ${destfile}" />
-      <get src="@{url}" dest="@{dest}" />
-      <local name="checksum.matches"/>
-      <local name="checksum.matches.fail"/>
-      <checksum file="@{dest}" property="@{md5}" verifyproperty="checksum.matches"/>
-      <condition property="checksum.matches.fail">
-        <equals arg1="${checksum.matches}" arg2="false"/>
-      </condition>
-      <fail if="checksum.matches.fail" message="Checksum error in ${destfile}" />
+      <if>
+        <equals arg1="${downloaded}" arg2="true" />
+        <then>
+          <echo message="Already downloaded ${destfile}" />
+        </then>
+        <else>
+          <echo message="Downloading ${destfile}" />
+          <get src="@{url}" dest="@{dest}" />
+          <local name="checksum.matches"/>
+          <local name="checksum.matches.fail"/>
+          <checksum file="@{dest}" property="@{md5}" verifyproperty="checksum.matches"/>
+          <condition property="checksum.matches.fail">
+            <equals arg1="${checksum.matches}" arg2="false"/>
+          </condition>
+          <fail if="checksum.matches.fail" message="Checksum error in ${destfile}" />          
+        </else>
+      </if>
     </sequential>
   </macrodef>
   
-  <target name="download-fop" depends="prepare-build" unless="download-fop.done">
-    <get-and-checksum url="${dl.fop}" dest="${downloads}/${dl.fop.file}" md5="${dl.fop.md5}" />
+  <target name="fop-extract" depends="prepare-build" unless="fop.extracted">
+    <basename property="dl.fop.file" file="${dl.fop}" />
+    <get-and-checksum url="${dl.fop}" dest="${downloads}/${dl.fop.file}" md5="${dl.fop.md5}" dlprop="fop.downloaded" />
     <unzip src="${downloads}/${dl.fop.file}" dest="${lib}" overwrite="false">
       <patternset>
         <include name="fop-1.0/build/fop.jar" />
@@ -235,39 +261,86 @@ To display the available targets type:
       </patternset>
       <mapper type="flatten" />
     </unzip>
-    <property name="download-fop.done" value="true"/>
+    <property name="fop.extracted" value="true"/>
   </target>
-  
-  <target name="download-rhino" depends="prepare-build" unless="download-rhino.done">
-    <get-and-checksum url="${dl.rhino}" dest="${downloads}/${dl.rhino.file}" md5="${dl.rhino.md5}" />
+
+  <target name="rhino172-extract" depends="prepare-build" unless="rhino172.extracted">
+    <basename property="dl.rhino172.file" file="${dl.rhino172}" />
+    <get-and-checksum url="${dl.rhino172}" dest="${downloads}/${dl.rhino172.file}" md5="${dl.rhino172.md5}" dlprop="rhino172.downloaded" />
+    <unzip src="${downloads}/${dl.rhino172.file}" dest="${lib}" overwrite="false">
+      <patternset>
+        <include name="rhino1_7R2/js.jar" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <property name="rhino172.extracted" value="true"/>
+  </target>
+
+  <target name="rhino-extract" depends="prepare-build" unless="rhino.extracted">
+    <basename property="dl.rhino.file" file="${dl.rhino}" />
+    <get-and-checksum url="${dl.rhino}" dest="${downloads}/${dl.rhino.file}" md5="${dl.rhino.md5}" dlprop="rhino.downloaded" />
     <unzip src="${downloads}/${dl.rhino.file}" dest="${lib}" overwrite="false">
       <patternset>
         <include name="rhino1_7R3/js.jar" />
       </patternset>
       <mapper type="flatten" />
     </unzip>
-    <property name="download-rhino.done" value="true"/>
+    <property name="rhino.extracted" value="true"/>
   </target>
   
-  <target name="download-py4j" depends="prepare-build" unless="download-py4j.done">
-    <get-and-checksum url="${dl.py4j}" dest="${downloads}/${dl.py4j.file}" md5="${dl.py4j.md5}" />
+  <target name="py4j-extract" depends="prepare-build" unless="py4j.extracted">
+    <basename property="dl.py4j.file" file="${dl.py4j}" />
+    <get-and-checksum url="${dl.py4j}" dest="${downloads}/${dl.py4j.file}" md5="${dl.py4j.md5}" dlprop="py4j.downloaded" />
     <unzip src="${downloads}/${dl.py4j.file}" dest="${lib}" overwrite="false">
       <patternset>
         <include name="py4j-0.7/py4j-java/py4j0.7.jar" />
       </patternset>
       <mapper type="flatten" />
     </unzip>
-    <property name="download-py4j.done" value="true"/>
+    <property name="py4j.extracted" value="true"/>
   </target>
   
-  <target name="download-binaries" depends="download-rhino, download-fop, download-py4j">
-    <antcall target="download-rhino" />
-    <antcall target="download-fop" />
-    <antcall target="download-py4j" />
+  <target name="gson-extract" depends="prepare-build" unless="gson.extracted">
+    <basename property="dl.gson.file" file="${dl.gson}" />
+    <get-and-checksum url="${dl.gson}" dest="${downloads}/${dl.gson.file}" md5="${dl.gson.md5}" dlprop="gson.downloaded" />
+    <unzip src="${downloads}/${dl.gson.file}" dest="${lib}" overwrite="false">
+      <patternset>
+        <include name="google-gson-2.0/gson-2.0.jar" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <property name="gson.extracted" value="true"/>
   </target>
+  
+  <target name="slf4j-extract" depends="prepare-build" unless="slf4j.extracted">
+    <basename property="dl.slf4j.file" file="${dl.slf4j}" />
+    <get-and-checksum url="${dl.slf4j}" dest="${downloads}/${dl.slf4j.file}" md5="${dl.slf4j.md5}" dlprop="slf4j.downloaded" />
+    <unzip src="${downloads}/${dl.slf4j.file}" dest="${lib}" overwrite="false">
+      <patternset>
+        <include name="slf4j-1.6.4/slf4j-api-1.6.4.jar" />
+        <include name="slf4j-1.6.4/slf4j-log4j12-1.6.4.jar" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <property name="slf4j.extracted" value="true"/>
+  </target>
+  
+  <target name="log4j-extract" depends="prepare-build" unless="log4j.extracted">
+    <basename property="dl.log4j.file" file="${dl.log4j}" />
+    <get-and-checksum url="${dl.log4j}" dest="${downloads}/${dl.log4j.file}" md5="${dl.log4j.md5}" dlprop="log4j.downloaded" />
+    <unzip src="${downloads}/${dl.log4j.file}" dest="${lib}" overwrite="false">
+      <patternset>
+        <include name="apache-log4j-1.2.16/log4j-1.2.16.jar" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <property name="log4j.extracted" value="true"/>
+  </target>
+  
+  <target name="download-binaries" depends="fop-extract, py4j-extract, gson-extract, log4j-extract, slf4j-extract"></target>
   
   <!-- All py4j svg2png in a single jar (dependencies: all) -->
-  <target name="jar" depends="init, compile, prepare-build,download-binaries"
+  <target name="jar" depends="init, prepare-build, download-binaries, compile"
           description="Creates a combined JAR file of the Py4J SVG2PNG libraries in ${build}">
     <jar destfile="${build}/${project}.jar">
       <zipgroupfileset dir="lib" includes="*.jar" />
@@ -280,13 +353,17 @@ To display the available targets type:
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
       <fileset dir="${dest}" excludes="**/.git*">
-        <include name="**"/>
+        <include name="**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="**/.git*">
+        <include name="**/*.js"/>
+        <include name="**/*.properties"/>
       </fileset>
     </jar>
   </target>
 
   <!-- py4j-svg2png-lib.jar (dependencies: all) -->
-  <target name="root-jar" depends="init, compile, prepare-build">
+  <target name="root-jar" depends="init, prepare-build, download-binaries, compile">
     <jar jarfile="${build}/${project}-lib.jar">
       <manifest>
         <attribute name="Implementation-Title" value="Py4J SVG2PNG library"/>
@@ -296,6 +373,12 @@ To display the available targets type:
         <attribute name="Main-Class" value="${class-prefix}.Main"/>
       </manifest>
       <metainf dir="${basedir}" includes="LICENSE,NOTICE"/>
+      <fileset dir="${dest}" excludes="**/.git*">
+        <include name="**/*.class"/>
+      </fileset>
+      <fileset dir="${resources}" excludes="**/.git*">
+        <include name="**/*.js"/>
+      </fileset>
     </jar>
   </target>
 

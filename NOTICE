@@ -7,6 +7,10 @@ Company (<http://www.theatlantic.com/>).
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
 
+This product includes software obtained from one2team at
+<https://github.com/one2team/highcharts-serverside-export>. This code was
+subsequently modified.
+
 This software contains code from the World Wide Web Consortium (W3C) for the 
 Document Object Model API (DOM API) and SVG Document Type Definition (DTD).
 

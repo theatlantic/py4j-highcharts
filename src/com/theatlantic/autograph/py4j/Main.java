@@ -1,4 +1,4 @@
-package com.theatlantic.autograph.py4j.svg2png;
+package com.theatlantic.autograph.py4j;
 
 import py4j.GatewayServer;
 import py4j.Py4JNetworkException;
@@ -19,6 +19,15 @@ public class Main {
      */
     public SVGRasterizer get_rasterizer() {
         return new SVGRasterizer();
+    }
+    
+    /**
+     * Returns a new instance of <tt>HighchartsExport</tt> for the java gateway.
+     *
+     * @return A new <tt>HighchartsExport</tt> instance.
+     */
+    public HighchartsExport get_highcharts_exporter() {
+        return new HighchartsExport();
     }
     
     /**

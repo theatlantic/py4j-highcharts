@@ -9,7 +9,7 @@ at [The Atlantic](https://github.com/theatlantic/).
 ## Installation
 
 The simplest way to get started is to simply download [the latest compiled
-jar](https://github.com/downloads/theatlantic/py4j-svg2png/py4j-svg2png.jar).
+jar](https://github.com/downloads/theatlantic/py4j-svg2png/py4j-svg2png-highcharts.jar).
 
 If you wish to compile the jar yourself, run:
 
@@ -66,10 +66,57 @@ Once installed, the rasterizer methods can be invoked as follows:
     f.close()
 ```
 
+And here is how one would call the Highcharts export methods:
+
+```python
+    json_opts = """{
+        "chart": {
+            "defaultSeriesType": "line",
+            "width": 600,
+            "height": 400
+        },
+        "title": { "text": "Tokyo Monthly Average Rainfall" },
+        "xAxis": {
+            "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        },
+        "yAxis": { "title": { "text": "Rainfall (mm)" } },
+        "series": [{ "data": [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4] }]
+    }"""
+
+    from py4j.java_gateway import JavaGateway
+    gateway = JavaGateway()
+    # get_highcharts_exporter() returns an instance of
+    # com.theatlantic.autograph.py4j.HighchartsExport
+    exporter = gateway.get_highcharts_exporter()
+
+    # HighchartsExport.export() takes a json string as its first argument.
+    png_bytes = exporter.export(json_opts)
+    print typeof(png_bytes)
+    # bytearray (python 2.7) or bytes (python 3.0+)
+
+    # HighchartsExport.export() can optionally take an output file path as a
+    # second argument.
+    exporter.export(json_opts, "/path/to/output/chart.png")
+
+    # HighchartsExport.export_to_svg() takes the same arguments as
+    # HighchartsExport.export(), but returns the svg string.
+    # It also can take a second output path argument.
+    svg = exporter.export_to_svg(json_opts)
+    f = open("/path/to/output/chart.svg", "w")
+    f.write(svg)
+    f.close()   
+```
+
 ## License
 
 The Py4J Rasterizer gateway code is licensed under the [Simplified BSD
 License](http://www.opensource.org/licenses/bsd-license.php) and is copyright
 **The Atlantic Media Company**. View the LICENSE file under the root directory.
-Copyright and licensing information of third-party libraries can be found
+
+The Highcharts export code is derived from the work of
+[one2team](https://github.com/one2team/highcharts-serverside-export), which
+is licensed under the
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+Copyright and licensing information of other third-party libraries can be found
 within the lib directory.

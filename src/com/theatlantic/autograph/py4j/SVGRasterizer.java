@@ -1,4 +1,4 @@
-package com.theatlantic.autograph.py4j.svg2png;
+package com.theatlantic.autograph.py4j;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,11 +30,19 @@ public class SVGRasterizer {
 	 */
 	protected PNGTranscoder transcoder;
 	
+	protected float width;
+	
+	protected float height;
+	
 	/**
 	 * Constructs a new <tt>SVGRasterizer</tt>
 	 */
 	public SVGRasterizer() {
 		transcoder = new PNGTranscoder();
+		// Turn off sRGB
+		transcoder.addTranscodingHint(PNGTranscoder.KEY_GAMMA, new Float(0.0F));
+		width = -1;
+		height = -1;
 	}
 	
     /**
@@ -45,10 +53,10 @@ public class SVGRasterizer {
      * <tt>set_height()</tt>), the transcoder will compute the raster image
      * height by keeping the aspect ratio of the SVG document.
      *
-     * @param width the desired raster image width.
+     * @param w the desired raster image width.
      */
-	public void set_width(Integer width) {
-		transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, width.floatValue());
+	public void set_width(Integer w) {
+		width = w.floatValue();
 	}
 	
 	/**
@@ -59,10 +67,10 @@ public class SVGRasterizer {
      * <tt>set_height()</tt>), the transcoder will compute the raster image
      * height by keeping the aspect ratio of the SVG document.
      *
-     * @param width the desired raster image width.
+     * @param w the desired raster image width.
      */
-	public void set_width(Double width) {
-		transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, width.floatValue());
+	public void set_width(Double w) {
+		width = w.floatValue();
 	}
 	
 	/**
@@ -73,10 +81,10 @@ public class SVGRasterizer {
      * <tt>set_width()</tt>), the transcoder will compute the raster image
      * width by keeping the aspect ratio of the SVG document.
      *
-     * @param height the desired raster image height.
+     * @param h the desired raster image height.
      */
-	public void set_height(Integer height) {
-		transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, height.floatValue());
+	public void set_height(Integer h) {
+		height = h.floatValue();
 	}
 	
 	/**
@@ -87,12 +95,23 @@ public class SVGRasterizer {
      * <tt>set_width()</tt>), the transcoder will compute the raster image
      * width by keeping the aspect ratio of the SVG document.
      *
-     * @param height the desired raster image height.
+     * @param h the desired raster image height.
      */
-	public void set_height(Double height) {
-		transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, height.floatValue());
+	public void set_height(Double h) {
+		height = h.floatValue();
 	}
     
+	protected void preConvert() {
+		if (width > 0) {
+			transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, width);
+			width = -1;
+		}
+		if (height > 0) {
+			transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, height);
+			height = -1;
+		}
+	}
+
     /**
      * Takes the string contents of an SVG document and returns a
      * byte array of the transcoded PNG.
@@ -104,6 +123,7 @@ public class SVGRasterizer {
      * @throws Py4JJavaException if an error occurred during the conversion
      */
 	public byte[] convert(String svgString) throws Py4JJavaException {
+		preConvert();
 		StringReader stringSource = new StringReader(svgString);
 		TranscoderInput input = new TranscoderInput(stringSource);
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();
@@ -130,6 +150,7 @@ public class SVGRasterizer {
      * @throws Py4JJavaException if an error occurred during the conversion
      */
 	public void convert(String svgString, String destFile) throws Py4JJavaException {
+		preConvert();
 		StringReader stringSource = new StringReader(svgString);
 		TranscoderInput input = new TranscoderInput(stringSource);
 		FileOutputStream ostream;
@@ -164,7 +185,8 @@ public class SVGRasterizer {
      * @return a <tt>ByteArrayOutputStream</tt> of the transcoded PNG.
      * @throws Py4JJavaException if an error occurred during the conversion
      */
-	public byte[] convert_file(String svgFile) throws Py4JJavaException{
+	public byte[] convert_file(String svgFile) throws Py4JJavaException {
+		preConvert();
 		String svgURI;
 		try {
 			svgURI = new File(svgFile).toURI().toURL().toString();
@@ -203,7 +225,8 @@ public class SVGRasterizer {
      * @param destFile the file to which the transcoded PNG should be saved.
      * @throws Py4JJavaException if an error occurred during the conversion
      */
-	public void convert_file(String svgFile, String destFile) throws Py4JJavaException{
+	public void convert_file(String svgFile, String destFile) throws Py4JJavaException {
+		preConvert();
 		String svgURI;
 		try {
 			svgURI = new File(svgFile).toURI().toURL().toString();
