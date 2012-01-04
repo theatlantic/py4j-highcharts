@@ -97,10 +97,7 @@ To display the available targets type:
     <property name="docs"               value="${build}/javadocs"/>
     <property name="downloads"          value="${build}/downloads"/>
     <property name="lib"                value="lib"/>
-    <property name="package-prefix"     value="com/theatlantic/autograph/py4j/svg2png"/>
-  
-    <property name="class-prefix"       value="com.theatlantic.autograph.py4j.svg2png"/>
-  
+    <property name="class-prefix"       value="com.theatlantic.autograph.py4j"/>
     <property name="dom.javadoc"        value="http://www.w3.org/2003/01/dom2-javadoc/"/>
     <property name="jdk.javadoc"        value="http://docs.oracle.com/javase/1.4.2/docs/api/"/>
     <property name="batik.javadoc"      value="http://xmlgraphics.apache.org/batik/javadoc/" />
