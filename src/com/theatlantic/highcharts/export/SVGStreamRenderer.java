@@ -30,56 +30,59 @@ import org.apache.commons.io.IOUtils;
 
 class SVGStreamRenderer extends ChartRenderer {
 
-	@Override
-	public void render() {
-		ByteArrayOutputStream baos = null;
-		Reader reader = null;
-		try {
-			
-			if (getOutputStream() == null)
-				throw (new RuntimeException("outputstream cannot be null"));
-			
-			baos = new ByteArrayOutputStream();
+    @Override
+    public void render() {
+        ByteArrayOutputStream baos = null;
+        Reader reader = null;
+        
+        try {    
+            if (getOutputStream() == null) {
+                throw (new RuntimeException("outputstream cannot be null"));
+            }
+            
+            baos = new ByteArrayOutputStream();
 
-			// if transcoder is null, render directly to output stream
-			if(transcoder == null){
-				wrapped.setOutputStream(getOutputStream()).render();
-			}else{
-				wrapped.setOutputStream(baos).render();
-				reader = new StringReader(baos.toString());
-				transcoder.transcode(new TranscoderInput(reader), new TranscoderOutput(getOutputStream()));
-			}
+            // if transcoder is null, render directly to output stream
+            if (transcoder == null) {
+                wrapped.setOutputStream(getOutputStream()).render();
+            } else {
+                wrapped.setOutputStream(baos).render();
+                reader = new StringReader(baos.toString());
+                transcoder.transcode(new TranscoderInput(reader), new TranscoderOutput(getOutputStream()));
+            }
 
-		} catch (TranscoderException e) {
-			throw new RuntimeException(e);
-		} finally {
-			IOUtils.closeQuietly(baos);
-			if(reader != null){	IOUtils.closeQuietly(reader); }
-		}
-	}
+        } catch (TranscoderException e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(baos);
+            if (reader != null) {
+                IOUtils.closeQuietly(reader);
+            }
+        }
+    }
 
-	@Override
-	public Renderer setGlobalOptions(String options) {
-		wrapped.setGlobalOptions(options);
-		return this;
-	}
+    @Override
+    public Renderer setGlobalOptions(String options) {
+        wrapped.setGlobalOptions(options);
+        return this;
+    }
 
-	@Override
-	public Renderer setChartOptions(String options) {
-		wrapped.setChartOptions(options);
-		return this;
-	}
+    @Override
+    public Renderer setChartOptions(String options) {
+        wrapped.setChartOptions(options);
+        return this;
+    }
 
-	Transcoder getTranscoder() {
-		return transcoder;
-	}
-	
-	public SVGStreamRenderer(Renderer wrapped, Transcoder transcoder) {
-		this.wrapped = wrapped;
-		this.transcoder = transcoder;
-	}
+    Transcoder getTranscoder() {
+        return transcoder;
+    }
+    
+    public SVGStreamRenderer(Renderer wrapped, Transcoder transcoder) {
+        this.wrapped = wrapped;
+        this.transcoder = transcoder;
+    }
 
-	private final Renderer wrapped;
+    private final Renderer wrapped;
 
-	private final Transcoder transcoder;
+    private final Transcoder transcoder;
 }

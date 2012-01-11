@@ -20,50 +20,50 @@ import java.io.OutputStream;
 
 public interface Renderer {
 
-	Renderer setChartOptions(String options);
+    Renderer setChartOptions(String options);
 
-	Renderer setOutputStream(OutputStream outputStream);
+    Renderer setOutputStream(OutputStream outputStream);
 
-	Renderer setGlobalOptions(String options);
+    Renderer setGlobalOptions(String options);
 
-	void render();
-	
-	public static abstract class ChartRenderer implements Renderer {
+    void render();
+    
+    public static abstract class ChartRenderer implements Renderer {
 
-		@Override
-		public Renderer setChartOptions(String options) {
-			this.options = options;
-			return this;
-		}
+        @Override
+        public Renderer setChartOptions(String options) {
+            this.options = options;
+            return this;
+        }
 
-		@Override
-		public Renderer setOutputStream(OutputStream output) {
-			this.output = output;
-			return this;
-		}
+        @Override
+        public Renderer setOutputStream(OutputStream output) {
+            this.output = output;
+            return this;
+        }
 
-		@Override
-		public Renderer setGlobalOptions(String options) {
-			this.globalOptions = options;
-			return this;
-		}
+        @Override
+        public Renderer setGlobalOptions(String options) {
+            this.globalOptions = options;
+            return this;
+        }
 
-		protected String getChartOptions() {
-			return options;
-		}
+        protected String getChartOptions() {
+            return options;
+        }
 
-		protected OutputStream getOutputStream() {
-			return output;
-		}
+        protected OutputStream getOutputStream() {
+            return output;
+        }
 
-		protected String getGlobalOptions() {
-			return globalOptions;
-		}
+        protected String getGlobalOptions() {
+            return globalOptions;
+        }
 
-		private String options, globalOptions;
+        private String options, globalOptions;
 
-		private OutputStream output;
+        private OutputStream output;
 
-	}
+    }
 
 }

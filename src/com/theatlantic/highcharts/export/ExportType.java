@@ -22,32 +22,32 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.transcoder.image.TIFFTranscoder;
 
 public enum ExportType {
-	svg {
-		@Override
-		protected Transcoder getTranscoder() {
-			return null;
-		}
-	},
-	png {
-		@Override
-		protected Transcoder getTranscoder() {
-			return new PNGTranscoder();
-		}
-	}, jpeg {
-		@Override
-		protected Transcoder getTranscoder() {
-			return new JPEGTranscoder();
-		}
-	}, tiff {
-		@Override
-		protected Transcoder getTranscoder() {
-			return new TIFFTranscoder();
-		}
-	};
-	
-	public HighchartsExporter createJsonExporter() {
-		return new HighchartsExporter(this, new SVGRendererInternal());
-	}
-	
-	protected abstract Transcoder getTranscoder();
+    svg {
+        @Override
+        protected Transcoder getTranscoder() {
+            return null;
+        }
+    },
+    png {
+        @Override
+        protected Transcoder getTranscoder() {
+            return new PNGTranscoder();
+        }
+    }, jpeg {
+        @Override
+        protected Transcoder getTranscoder() {
+            return new JPEGTranscoder();
+        }
+    }, tiff {
+        @Override
+        protected Transcoder getTranscoder() {
+            return new TIFFTranscoder();
+        }
+    };
+    
+    public HighchartsExporter createJsonExporter() {
+        return new HighchartsExporter(this, new SVGRendererInternal());
+    }
+    
+    protected abstract Transcoder getTranscoder();
 }

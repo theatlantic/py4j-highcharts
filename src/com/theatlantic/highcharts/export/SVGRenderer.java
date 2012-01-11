@@ -24,30 +24,32 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 
 class SVGRenderer extends ChartRenderer {
-	
-	public SVGRenderer(SVGRendererInternal internal) {
-		this.internal = internal;
-	}
+    
+    public SVGRenderer(SVGRendererInternal internal) {
+        this.internal = internal;
+    }
 
-	@Override
-	public void render() {
-		if (getChartOptions() == null)
-			throw (new RuntimeException("chartOptions must not be null"));
-		
-		ByteArrayInputStream byteStream = null;
-		try {
-			final String svg = internal.getSVG(getChartOptions());
-			if (svg == null)
-				throw (new RuntimeException("cannot generate svg"));
-			byteStream = new ByteArrayInputStream(svg.getBytes());
-			IOUtils.copy(byteStream, getOutputStream());
-		} catch (IOException e) {
-			throw (new RuntimeException(e));
-		} finally {
-			IOUtils.closeQuietly(byteStream);
-		}
-	}
-	
-	private final SVGRendererInternal internal;
+    @Override
+    public void render() {
+        if (getChartOptions() == null) {
+            throw (new RuntimeException("chartOptions must not be null"));
+        }
+        
+        ByteArrayInputStream byteStream = null;
+        try {
+            final String svg = internal.getSVG(getChartOptions());
+            if (svg == null) {
+                throw (new RuntimeException("cannot generate svg"));
+            }
+            byteStream = new ByteArrayInputStream(svg.getBytes());
+            IOUtils.copy(byteStream, getOutputStream());
+        } catch (IOException e) {
+            throw (new RuntimeException(e));
+        } finally {
+            IOUtils.closeQuietly(byteStream);
+        }
+    }
+    
+    private final SVGRendererInternal internal;
 
 }

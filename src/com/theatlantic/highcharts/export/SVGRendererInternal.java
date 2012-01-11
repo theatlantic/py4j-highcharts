@@ -25,14 +25,11 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextAction;
-import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 import org.mozilla.javascript.tools.shell.ShellContextFactory;
-import org.mozilla.javascript.tools.shell.Global;
 import org.mozilla.javascript.tools.debugger.Main;
 import org.mozilla.javascript.tools.debugger.ScopeProvider;
 
@@ -40,9 +37,7 @@ import org.mozilla.javascript.tools.debugger.ScopeProvider;
 public class SVGRendererInternal {
     
     protected static Scriptable sharedScope;
-    
-    private Global global = new Global();
-    
+        
     protected static ShellContextFactory contextFactory = new ShellContextFactory();
     
     public SVGRendererInternal() {
@@ -53,8 +48,8 @@ public class SVGRendererInternal {
             contextFactory.call(new ScriptLoader());
         }
     }
-	
-	private static class ScriptLoader implements ContextAction {
+    
+    private static class ScriptLoader implements ContextAction {
         private List<Script> scripts;
         public Object run(Context cx) {
             SVGHighchartsHelper.LOGGER.trace("set langage version to 1.6");
@@ -114,16 +109,16 @@ public class SVGRendererInternal {
                 IOUtils.closeQuietly(reader);
             }
         }
-	}
-	
-	private static class SVGRendererContextAction implements ContextAction {
-	    
-	    String chartOptions;
-	    
-	    public SVGRendererContextAction(String chartOptions) {
-	        this.chartOptions = chartOptions;
-	    }
-	    
+    }
+    
+    private static class SVGRendererContextAction implements ContextAction {
+        
+        String chartOptions;
+        
+        public SVGRendererContextAction(String chartOptions) {
+            this.chartOptions = chartOptions;
+        }
+        
         @Override
         public Object run(Context context) {
             if (SVGHighchartsHelper.DEBUG) {
@@ -151,9 +146,9 @@ public class SVGRendererInternal {
         }
         
         protected Object callJavascript(Scriptable scope, String chartOptions) {
-    	    return ScriptableObject.callMethod(null, scope, "renderSVGFromJson",
-    	        new Object [] {chartOptions});
-    	}
+            return ScriptableObject.callMethod(null, scope, "renderSVGFromJson",
+                new Object [] {chartOptions});
+        }
         
         private void launchRhinoDebugger() {
             SVGHighchartsHelper.LOGGER.debug("launching rhino debugger");
@@ -172,7 +167,7 @@ public class SVGRendererInternal {
             SVGHighchartsHelper.rhinoDebugger.setVisible(true);
         }
     }
-	
+    
     public String getSVG(final String chartOptions) throws IOException {
         SVGHighchartsHelper.LOGGER.trace("get svg for highcharts export functions with rhino");
         
@@ -182,10 +177,12 @@ public class SVGRendererInternal {
         }
             
         String svg = call.toString();
-        
-        //post treatement
+        //post treatment
         svg = svg.substring(svg.indexOf("<svg"), svg.indexOf("</div>"));
-        
+        svg = "<?xml version=\"1.0\"?>\n"
+            + "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\""
+            + " \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
+            + svg;
         SVGHighchartsHelper.LOGGER.trace("svg rendered : \n" + svg);
         return svg;
     }

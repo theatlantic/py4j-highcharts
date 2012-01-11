@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 
-import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.RhinoException;
 
 import com.theatlantic.highcharts.export.ExportType;
@@ -35,10 +34,10 @@ public class HighchartsExport {
         try {
             try {
                 svgFromJsonExporter.export(jsonOptions, null, svgOutput);
-    	    } catch (RhinoException re) {
-    	        re.printStackTrace();
-    	        throw new ExtendedScriptException(re);
-    		}
+            } catch (RhinoException re) {
+                re.printStackTrace();
+                throw new ExtendedScriptException(re);
+            }
         } catch (ExtendedScriptException e) {
             throw new Py4JJavaException(e.getMessage(), e);
         }
@@ -47,19 +46,19 @@ public class HighchartsExport {
     
     public void export_to_svg(String jsonOptions, String destFile) {
         FileOutputStream ostream;
-		try {
-			ostream = new FileOutputStream(new File(destFile));
-		} catch (FileNotFoundException e) {
-			throw new Py4JJavaException(
-					String.format("Could not create file '%s' as output source", destFile), e);
-		}
-		try {
-    		try {
-    		    svgFromJsonExporter.export(jsonOptions, null, ostream);
-    	    } catch (RhinoException re) {
-    	        re.printStackTrace();
-    	        throw new ExtendedScriptException(re);
-    		}
+        try {
+            ostream = new FileOutputStream(new File(destFile));
+        } catch (FileNotFoundException e) {
+            throw new Py4JJavaException(
+                    String.format("Could not create file '%s' as output source", destFile), e);
+        }
+        try {
+            try {
+                svgFromJsonExporter.export(jsonOptions, null, ostream);
+            } catch (RhinoException re) {
+                re.printStackTrace();
+                throw new ExtendedScriptException(re);
+            }
         } catch (ExtendedScriptException e) {
             throw new Py4JJavaException(e.getMessage(), e);
         }
@@ -67,7 +66,7 @@ public class HighchartsExport {
     
     public byte[] export(String jsonOptions) throws Py4JJavaException {
         String svgString = export_to_svg(jsonOptions);
-		return rasterizer.convert(svgString);
+        return rasterizer.convert(svgString);
     }
     
     public void export(String jsonOptions, String destFile) throws Py4JJavaException {

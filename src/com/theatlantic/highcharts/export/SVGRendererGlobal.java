@@ -7,6 +7,8 @@ import org.mozilla.javascript.ImporterTopLevel;
 
 public class SVGRendererGlobal extends ImporterTopLevel {
     
+    private static final long serialVersionUID = 1L;
+    
     boolean initialized;
     
     public SVGRendererGlobal() { }

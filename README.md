@@ -47,7 +47,7 @@ Once installed, the rasterizer methods can be invoked as follows:
     from py4j.java_gateway import JavaGateway
     gateway = JavaGateway()
     # get_rasterizer() returns an instance of
-    # com.theatlantic.autograph.py4j.svg2png.SVGRasterizer
+    # com.theatlantic.autograph.py4j.SVGRasterizer
     rasterizer = gateway.get_rasterizer()
     
     # SVGRasterizer.convert() takes an svg string as its first argument.

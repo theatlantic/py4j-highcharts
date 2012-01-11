@@ -12,8 +12,8 @@ import org.mozilla.javascript.RhinoException;
  */
 public class ExtendedScriptException extends ScriptException {
     
-    private Throwable cause;
-    
+    private static final long serialVersionUID = 1L;
+      
     private ExtendedScriptException(
             Throwable cause,
             String message,
@@ -25,14 +25,15 @@ public class ExtendedScriptException extends ScriptException {
     }
     
     private static class FakeRhinoException extends Exception {
-        public Throwable cause;
+        
+        private static final long serialVersionUID = 1L;
+        
         public int lineNumber;
         public int columnNumber;
         public String message;
         public String fileName;
 
         public FakeRhinoException(Exception e) {
-            this.cause = e;
             if (e instanceof RhinoException) {
                 RhinoException re = (RhinoException) e;
                 fileName = re.sourceName();
