@@ -2246,7 +2246,9 @@ SVGRenderer.prototype = {
 						if (lineNo) {
 							// Webkit and opera sometimes return 'normal' as the line height. In that
 							// case, webkit uses offsetHeight, while Opera falls back to 18
-							lineHeight = pInt(window.getComputedStyle(lastLine, null).getPropertyValue('line-height'));
+							try {
+							    lineHeight = pInt(window.getComputedStyle(lastLine, null).getPropertyValue('line-height'));
+						    } catch(e) { }
 							if (isNaN(lineHeight)) {
 								lineHeight = textLineHeight || lastLine.offsetHeight || 18;
 							}
@@ -6710,7 +6712,7 @@ function Chart (options, callback) {
 						0, 
 						0,
 						legendWidth,
-						legendHeight,
+						Math.max(legendHeight, 0),
 						options.borderRadius,
 						legendBorderWidth || 0
 					).attr({
@@ -6724,7 +6726,7 @@ function Chart (options, callback) {
 				} else if (legendWidth > 0 && legendHeight > 0) {
 					box.animate({
 						width: legendWidth,
-						height: legendHeight
+						height: Math.max(legendHeight, 0)
 					});
 				}
 				
