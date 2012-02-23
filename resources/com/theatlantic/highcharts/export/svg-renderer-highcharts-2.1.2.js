@@ -5,8 +5,8 @@ var jsonReviver;
         if (!unescapeHtmlDiv) {
             unescapeHtmlDiv = Highcharts.createElement('div', null, null, null, true);        
         }
-		div.innerHTML = str;
-		return div.innerText || div.text || div.textContent;
+		unescapeHtmlDiv.innerHTML = str;
+		return unescapeHtmlDiv.innerText || unescapeHtmlDiv.text || unescapeHtmlDiv.textContent;
 	};
 	
 	var dateRegex = new RegExp(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
