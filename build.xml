@@ -31,7 +31,7 @@ property should be set to match the JVM you want to use.
 
 If you are going to be doing development you may want to create a file
 called 'build.properties' with the line 'debug=on' in it.  This will 
-turn on the generation of debugging information when compiling Py4J-SVG2PNG.
+turn on the generation of debugging information when compiling Py4J-HIGHCHARTS.
 
 Building Instructions
 ..............................................................................
@@ -58,7 +58,7 @@ To display the available targets type:
 
 -->
 
-<project default="jar" name="py4j-svg2png" basedir=".">
+<project default="jar" name="py4j-highcharts" basedir=".">
 
   <!-- Configuring the build -->
   <property file="${basedir}/build-local.properties"/>
@@ -76,8 +76,8 @@ To display the available targets type:
     <tstamp>
       <format property="ts" pattern="yyyyMMdd-HHmmss-z"/>
     </tstamp>
-    <property name="Project"            value="Py4J SVG2PNG"/>
-    <property name="project"            value="py4j-svg2png"/>
+    <property name="Project"            value="Py4J HighCharts"/>
+    <property name="project"            value="py4j-highcharts"/>
     <property name="year"               value="2011"/>
     <property name="version"            value="1.0"/>
     <property name="revisionType"       value=""/>
@@ -145,16 +145,16 @@ To display the available targets type:
     <echo message=" -- Building ------------------------------------------------------"/>
     <echo message=""/>
     <echo message="    compile"/>
-    <echo message="        Compiles all of Py4J SVG2PNG."/>
+    <echo message="        Compiles all of Py4J HighCharts."/>
     <echo message="        (Creates class files in classes/ from files in src/"/>
     <echo message=""/>
     <echo message="    jar"/>
-    <echo message="        Builds a single jar that contains all Py4J SVG2PNG libraries"/>
+    <echo message="        Builds a single jar that contains all Py4J HighCharts libraries"/>
     <echo message="        including its dependencies."/>
     <echo message="        (Creates ${build}/${project}.jar.)"/>
     <echo message=""/>
     <echo message="    root-jar"/>
-    <echo message="        Builds a single jar that contains all Py4J SVG2PNG libraries"/>
+    <echo message="        Builds a single jar that contains all Py4J HighCharts libraries"/>
     <echo message="        not including its dependencies."/>
     <echo message="        (Creates ${build}/${project}-lib.jar.)"/>
     <echo message=""/>
@@ -336,13 +336,13 @@ To display the available targets type:
   
   <target name="download-binaries" depends="fop-extract, py4j-extract, gson-extract, log4j-extract, slf4j-extract"></target>
   
-  <!-- All py4j svg2png in a single jar (dependencies: all) -->
+  <!-- All py4j highcharts in a single jar (dependencies: all) -->
   <target name="jar" depends="init, prepare-build, download-binaries, compile"
-          description="Creates a combined JAR file of the Py4J SVG2PNG libraries in ${build}">
+          description="Creates a combined JAR file of the Py4J HighCharts libraries in ${build}">
     <jar destfile="${build}/${project}.jar">
       <zipgroupfileset dir="lib" includes="*.jar" />
       <manifest>
-        <attribute name="Implementation-Title" value="Py4J SVG2PNG"/>
+        <attribute name="Implementation-Title" value="Py4J HighCharts"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
         <attribute name="Implementation-Vendor" value="The Atlantic &lt;http://www.theatlantic.com/&gt;"/>
         <attribute name="Build-Id" value="${build.id}"/>
@@ -359,11 +359,11 @@ To display the available targets type:
     </jar>
   </target>
 
-  <!-- py4j-svg2png-lib.jar (dependencies: all) -->
+  <!-- py4j-highcharts-lib.jar (dependencies: all) -->
   <target name="root-jar" depends="init, prepare-build, download-binaries, compile">
     <jar jarfile="${build}/${project}-lib.jar">
       <manifest>
-        <attribute name="Implementation-Title" value="Py4J SVG2PNG library"/>
+        <attribute name="Implementation-Title" value="Py4J HighCharts library"/>
         <attribute name="Implementation-Version" value="${completeVersion}"/>
         <attribute name="Implementation-Vendor" value="The Atlantic &lt;http://www.theatlantic.com/&gt;"/>
         <attribute name="Build-Id" value="${build.id}"/>
