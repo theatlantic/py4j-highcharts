@@ -177,9 +177,9 @@ public class SVGRendererInternal {
         }
             
         String svg = call.toString();
-        //post treatment
+        // post treatment
         svg = svg.substring(svg.indexOf("<svg"), svg.indexOf("</div>"));
-        svg = "<?xml version=\"1.0\"?>\n"
+        svg = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\""
             + " \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
             + svg;

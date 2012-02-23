@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 import org.mozilla.javascript.RhinoException;
 
@@ -100,7 +101,11 @@ public class HighchartsExport {
         } catch (ExtendedScriptException e) {
             throw new Py4JJavaException(e.getMessage(), e);
         }
-        return svgOutput.toString();
+        try {
+            return svgOutput.toString("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return svgOutput.toString();
+        }
     }
     
     public String export_file_to_svg(String jsonFile) throws Py4JJavaException {

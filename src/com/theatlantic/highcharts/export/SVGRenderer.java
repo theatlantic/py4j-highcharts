@@ -19,7 +19,9 @@ package com.theatlantic.highcharts.export;
 import com.theatlantic.highcharts.export.Renderer.ChartRenderer;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import org.apache.commons.io.IOUtils;
 
@@ -42,7 +44,8 @@ class SVGRenderer extends ChartRenderer {
                 throw (new RuntimeException("cannot generate svg"));
             }
             byteStream = new ByteArrayInputStream(svg.getBytes());
-            IOUtils.copy(byteStream, getOutputStream());
+            InputStreamReader reader = new InputStreamReader(byteStream);
+            IOUtils.copy(reader, getOutputStream(), "UTF-8");
         } catch (IOException e) {
             throw (new RuntimeException(e));
         } finally {
