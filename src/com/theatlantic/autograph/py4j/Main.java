@@ -11,7 +11,10 @@ import py4j.Py4JNetworkException;
  * @version $Id$
  */
 public class Main {
-    
+    static {
+        // Set to headless so dock icon doesn't show on Mac
+        System.setProperty("java.awt.headless", "true");
+    }
     /**
      * Returns a new instance of <tt>SVGRasterizer</tt> for the java gateway.
      *
